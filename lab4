@@ -1,0 +1,35 @@
+% экспертная система выдает идеи для отдыха
+
+% описание каждого отдыха
+rest(reading_a_book,[passive,spring,hour_of_time]).
+rest(bus_tour_in_the_city,[passive,summer,two_hours_of_time]).
+rest(running,[active,summer,hour_of_time]).
+rest(swimming,[active,summer,hour_of_time]).
+rest(mountain_hiking,[active,autumn,two_hours_of_time]).
+rest(wathing_tv_shows,[passive,winter,two_hours_of_time]).
+rest(yoga,[active,winter,spring,hour_of_time]).
+
+have_char([active,summer,hour_of_time]).
+
+% правило для рекомендации идеи отдыха по его характеристикам
+recommend_rest(Rest) :-
+    rest(Rest, Needed_Characteristics),
+    have_char(Have_Characteristics),
+    forall(member(Char,Needed_Characteristics),member(Char,Have_Characteristics)).
+
+% список рекомендуемых идей для отдыха
+listing_rests(Rests) :-
+    findall(Rest, recommend_rest(Rest), Rests).
+
+% вывод идей на экран
+printout([],_).
+printout([Rest|Tail],Index) :-
+    write(Index), write('. '), write(Rest), nl,
+	NewIndex is Index + 1,
+	printout(Tail,NewIndex).
+
+% запуск программы
+start :-
+    format('   Hi, I choose idea for your rest. ^^~n'),
+	listing_rests(Rests),
+    printout(Rests,1).
